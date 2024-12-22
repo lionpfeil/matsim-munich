@@ -3,14 +3,14 @@
 <config>
     <module name="controler">
         <param name="firstIteration" value="0"/>
-        <param name="lastIteration" value="50"/>
+        <param name="lastIteration" value="0"/>
         <param name="overwriteFiles" value="deleteDirectoryIfExists"/>
         <param name="runId" value="test"/>
     </module>
 
     <module name="network">
         <param name="inputNetworkFile"
-               value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/munich/munich-v1/input/munich-v1.0-network.xml.gz"/>
+               value="/Users/lion.pfeil/IdeaProjects/matsim-munich/original-input-data/cropped_munich-v1.0-network.xml.gz"/>
     </module>
 
     <module name="qsim" >
@@ -90,7 +90,7 @@
     </module>
 
     <module name="plans">
-        <param name="inputPlansFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/munich/munich-v1/input/munich-v1.0-5pct.plans.xml.gz" />
+        <param name="inputPlansFile" value="/Users/lion.pfeil/IdeaProjects/matsim-munich/original-input-data/car_munich-v1.0-5pct.plans.xml" />
     </module>
 
     <module name="planCalcScore" >

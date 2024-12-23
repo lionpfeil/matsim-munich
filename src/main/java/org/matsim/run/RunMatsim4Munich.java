@@ -102,12 +102,29 @@ public class RunMatsim4Munich{
 	}
 
 	public final void run() {
-		if ( controler==null ) {
-			prepareControler() ;
+		if ( controler == null ) {
+			prepareControler();
 		}
-		controler.run() ;
-	}
+		// Existing code: add the CarKmEventHandler as an event handler
+		CarKmEventHandler handler = new CarKmEventHandler(scenario.getNetwork());
+		controler.getEvents().addHandler(handler);
 
+		// 1. Create an instance of your ScoreSummationEventHandler
+		ScoreSummationEventHandler scoreHandler = new ScoreSummationEventHandler();
+
+		// 2. Register it with the Controler
+		//    (Note that ScoreSummationEventHandler implements IterationEndsListener,
+		//     which is added via addControlerListener, not addHandler.)
+		controler.addControlerListener(scoreHandler);
+
+		// Run the simulation
+		controler.run();
+
+		// Use the result after the simulation finishes
+		System.out.println("Car distance traveled (km): " + handler.getTotalCarKilometers());
+		System.out.println("Sum of selected plan scores in last iteration: "
+				+ scoreHandler.getSumOfSelectedPlanScores());
+	}
 	public final AllowsConfiguration prepareControler() {
 		if ( scenario==null ) {
 			prepareScenario() ;
@@ -124,27 +141,7 @@ public class RunMatsim4Munich{
 			}
 		} );
 
-		controler.addOverridingModule(new AbstractModule() {
-			@Override
-			public void install() {
-				final Provider<TripRouter> tripRouterProvider = binder().getProvider(TripRouter.class );
 
-				// this here "registers" an additional stratetegy under "SubtourModeChoice_COMMUTER_REV_COMMUTER".  We want the commuters have a different pt than the urban population, and this cannot be
-				// configured by config alone.  See here: https://github.com/matsim-org/matsim-code-examples/issues/92 .
-				addPlanStrategyBinding( "SubtourModeChoice_COMMUTER_REV_COMMUTER" ).toProvider( new Provider<PlanStrategy>() {
-					final String[] availableModes = {"car", "pt_COMMUTER_REV_COMMUTER"};
-					final String[] chainBasedModes = {"car", "bike"};
-					@Inject Scenario sc;
-					@Override public PlanStrategy get() {
-						final PlanStrategyImpl.Builder builder = new PlanStrategyImpl.Builder(new RandomPlanSelector<>());
-						builder.addStrategyModule(new SubtourModeChoice(sc.getConfig().global().getNumberOfThreads(), availableModes, chainBasedModes, false,
-							  0.5, tripRouterProvider) );
-						builder.addStrategyModule(new ReRoute(sc, tripRouterProvider) );
-						return builder.build();
-					}
-				} );
-			}
-		});
 
 
 		return controler ;

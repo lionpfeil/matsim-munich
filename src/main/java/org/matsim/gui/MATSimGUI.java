@@ -19,7 +19,6 @@
 
 package org.matsim.gui;
 
-import org.matsim.run.RunMatsim4Munich;
 import org.matsim.run.RunMunichTumScenario;
 import org.matsim.run.gui.Gui;
 
